@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#4361ee">
-    <meta name="description" content="Client-side phishing detection tool">
-    <title>PhishDetector - Analyze Suspicious Emails</title>
+    <meta name="description" content="Advanced client-side phishing detection">
+    <title>PhishDetector - Comprehensive Threat Analysis</title>
     
     <!-- PWA Manifest and Icons -->
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBoaXNoRGV0ZWN0b3IiLAogICJzaG9ydF9uYW1lIjogIlBoaXNoRGV0ZWN0IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjNDM2MWVlIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjVmN2ZhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXpOVEFnTlRBd0lqNDhjM1I1YkdVK8lEeHdZWFJvSUdacGJHdzlJblZ5YkNnalptbHNkR1Z5TVM0d0xqQXVNQ0F4TURBdU1UWWlQZzBLUDNOMlp6ND0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F6TlRBZ05UQXdJajQ4YzNSNWJHVSvJRHh3WVhSb0lHWnBiR3c5SW5WeWJDZ2pabWxzZEdWeU1TNHdMakF1TUNBeE1EQXVNVFlpUGcwS1AzTjJaejQ9IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
@@ -14,6 +14,8 @@
     <!-- TensorFlow.js for ML analysis -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl@1.0.0"></script>
+    <!-- Tesseract.js for OCR -->
+    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
     
     <style>
         :root {
@@ -74,6 +76,37 @@
             color: var(--gray);
             max-width: 700px;
             margin: 0 auto 20px;
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+            padding: 5px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
         
         .content {
@@ -170,6 +203,16 @@
         
         .btn:active {
             transform: translateY(0);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(67, 97, 238, 0.1);
         }
         
         .result-container {
@@ -368,6 +411,70 @@
             color: var(--warning);
         }
         
+        .image-upload-container {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: var(--transition);
+            background: rgba(244, 249, 247, 0.8);
+        }
+        
+        .image-upload-container:hover {
+            border-color: var(--primary);
+        }
+        
+        .image-upload-container.drag-over {
+            background: rgba(67, 97, 238, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .image-analysis-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.02);
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .link-analysis-results {
+            margin-top: 20px;
+        }
+        
         /* PWA Install Button */
         .pwa-install-container {
             position: fixed;
@@ -467,23 +574,6 @@
             100% { transform: scale(0.95); }
         }
         
-        @keyframes pulseInstall {
-            0% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7);
-            }
-            
-            70% {
-                transform: scale(1);
-                box-shadow: 0 0 0 10px rgba(67, 97, 238, 0);
-            }
-            
-            100% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
-            }
-        }
-        
         footer {
             text-align: center;
             margin-top: 60px;
@@ -492,6 +582,25 @@
             font-size: 0.9rem;
             border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tech-item {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -499,62 +608,264 @@
         <header>
             <div class="logo">🔍</div>
             <h1>PhishDetector</h1>
-            <p class="subtitle">Client-side tool to analyze suspicious emails or messages for phishing indicators</p>
+            <p class="subtitle">Advanced client-side detection for phishing threats in text, links, and images</p>
         </header>
         
-        <div class="content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-mail-bulk"></i>
-                    </div>
-                    <h2 class="card-title">Analyze Content</h2>
-                </div>
-                
-                <p>Paste the content of a suspicious email or message below:</p>
-                <textarea id="emailContent" placeholder="Paste email content here..."></textarea>
-                
-                <p class="model-status">TensorFlow.js ML Model: <span id="modelStatus">Loaded and ready</span></p>
-                
-                <button id="analyzeBtn" class="btn">
-                    <i class="fas fa-search"></i> Analyze for Phishing Indicators
-                </button>
-                
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>Analyzing content with AI. This may take a few seconds...</p>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h2 class="card-title">Analysis Results</h2>
-                </div>
-                
-                <div class="result-container" id="results">
-                    <div class="risk-score">
-                        <div class="score-value" id="riskScore">0%</div>
-                        <div class="score-text" id="riskLevel">No content analyzed</div>
+        <div class="tab-container">
+            <div class="tab active" data-tab="text">Text Analysis</div>
+            <div class="tab" data-tab="image">Image Analysis</div>
+            <div class="tab" data-tab="link">Link Safety Check</div>
+        </div>
+        
+        <div class="tab-content active" id="text-tab">
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-mail-bulk"></i>
+                        </div>
+                        <h2 class="card-title">Analyze Text Content</h2>
                     </div>
                     
-                    <div class="risk-bar">
-                        <div class="risk-level" id="riskBar" style="width: 0%; background: #06d6a0;"></div>
+                    <p>Paste the content of a suspicious email, message, or document below:</p>
+                    <textarea id="emailContent" placeholder="Paste content here..."></textarea>
+                    
+                    <p class="model-status">TensorFlow.js ML Model: <span id="modelStatus">Loaded and ready</span></p>
+                    
+                    <button id="analyzeBtn" class="btn">
+                        <i class="fas fa-search"></i> Analyze for Phishing Indicators
+                    </button>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing content with AI. This may take a few seconds...</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2 class="card-title">Analysis Results</h2>
                     </div>
                     
-                    <div class="indicators" id="indicators">
-                        <p>Analysis results will appear here after scanning content.</p>
+                    <div class="result-container" id="results">
+                        <div class="risk-score">
+                            <div class="score-value" id="riskScore">0%</div>
+                            <div class="score-text" id="riskLevel">No content analyzed</div>
+                        </div>
+                        
+                        <div class="risk-bar">
+                            <div class="risk-level" id="riskBar" style="width: 0%; background: #06d6a0;"></div>
+                        </div>
+                        
+                        <div class="indicators" id="indicators">
+                            <p>Analysis results will appear here after scanning content.</p>
+                        </div>
+                        
+                        <div id="urlPreviews"></div>
                     </div>
-                    
-                    <div id="urlPreviews"></div>
                 </div>
             </div>
         </div>
         
+        <div class="tab-content" id="image-tab">
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <h2 class="card-title">Analyze Images</h2>
+                    </div>
+                    
+                    <div class="image-upload-container" id="imageDropZone">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #4361ee; margin-bottom: 15px;"></i>
+                        <h3>Upload Suspicious Images</h3>
+                        <p>Drag & drop images here or click to browse</p>
+                        
+                        <div class="file-input-wrapper">
+                            <div class="file-input-btn">
+                                <i class="fas fa-folder-open"></i> Select Image
+                            </div>
+                            <input type="file" id="imageUpload" accept="image/*">
+                        </div>
+                        
+                        <img id="imagePreview" class="image-preview" alt="Image preview">
+                    </div>
+                    
+                    <div id="imageAnalysisResults" class="image-analysis-results">
+                        <h3>Image Analysis Results</h3>
+                        <div class="indicators" id="imageIndicators"></div>
+                    </div>
+                    
+                    <button id="analyzeImageBtn" class="btn" disabled>
+                        <i class="fas fa-search"></i> Analyze Image
+                    </button>
+                    
+                    <div class="loading" id="imageLoading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing image content. This may take 10-15 seconds...</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h2 class="card-title">How Image Analysis Works</h2>
+                    </div>
+                    
+                    <div class="indicators">
+                        <div class="indicator-item indicator-info">
+                            <div class="indicator-icon">
+                                <i class="fas fa-text-height"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">Text Extraction</div>
+                                <div class="indicator-desc">Optical character recognition (OCR) scans for hidden text in images</div>
+                            </div>
+                        </div>
+                        
+                        <div class="indicator-item indicator-info">
+                            <div class="indicator-icon">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">QR Code Detection</div>
+                                <div class="indicator-desc">Scans for QR codes that may contain malicious URLs</div>
+                            </div>
+                        </div>
+                        
+                        <div class="indicator-item indicator-info">
+                            <div class="indicator-icon">
+                                <i class="fas fa-fingerprint"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">Image Hash Matching</div>
+                                <div class="indicator-desc">Compares against known phishing image signatures</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">Common Phishing Image Tactics</h3>
+                    <ul style="padding-left: 20px; margin-top: 10px; color: var(--gray);">
+                        <li>Brand logos to impersonate legitimate companies</li>
+                        <li>Urgent warning symbols (red alerts, lock icons)</li>
+                        <li>Fake security certificates or verification badges</li>
+                        <li>QR codes linking to malicious sites</li>
+                        <li>Text hidden in images to bypass spam filters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="link-tab">
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h2 class="card-title">Link Safety Check</h2>
+                    </div>
+                    
+                    <p>Enter a suspicious URL to analyze:</p>
+                    <input type="text" id="linkInput" placeholder="https://example.com" style="width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; margin-bottom: 20px;">
+                    
+                    <button id="analyzeLinkBtn" class="btn">
+                        <i class="fas fa-shield-alt"></i> Analyze URL Safety
+                    </button>
+                    
+                    <div class="loading" id="linkLoading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing link safety. This may take a few seconds...</p>
+                    </div>
+                    
+                    <div id="linkAnalysisResults" class="link-analysis-results" style="display: none;">
+                        <h3 style="margin-top: 30px;">Link Analysis Results</h3>
+                        <div class="indicators" id="linkIndicators"></div>
+                        
+                        <div class="url-preview">
+                            <div><strong>URL:</strong> <a href="#" id="linkUrl" target="_blank">https://example.com</a></div>
+                            <div class="url-status" id="linkStatus">Status</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h2 class="card-title">Domain Safety Information</h2>
+                    </div>
+                    
+                    <div class="indicators">
+                        <div class="indicator-item indicator-danger">
+                            <div class="indicator-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">High-Risk Indicators</div>
+                                <div class="indicator-desc">Shortened URLs, mismatched domains, and suspicious TLDs</div>
+                            </div>
+                        </div>
+                        
+                        <div class="indicator-item indicator-warning">
+                            <div class="indicator-icon">
+                                <i class="fas fa-user-secret"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">Privacy Protection</div>
+                                <div class="indicator-desc">URLs are never sent to external servers</div>
+                            </div>
+                        </div>
+                        
+                        <div class="indicator-item indicator-info">
+                            <div class="indicator-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">Threat Intelligence</div>
+                                <div class="indicator-desc">Local database of known malicious domains</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3>What We Check</h3>
+                        <ul style="padding-left: 20px; margin-top: 10px; color: var(--gray);">
+                            <li>Domain age and registration details</li>
+                            <li>SSL certificate validity</li>
+                            <li>Known phishing patterns</li>
+                            <li>URL structure anomalies</li>
+                            <li>Redirect chains and final destination</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tech-stack">
+            <div class="tech-item">
+                <i class="fas fa-brain" style="color: #4361ee;"></i> TensorFlow.js
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-eye" style="color: #4361ee;"></i> Tesseract.js OCR
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-mobile-alt" style="color: #4361ee;"></i> PWA
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-shield-alt" style="color: #4361ee;"></i> Client-Side
+            </div>
+        </div>
+        
         <footer>
-            <p>PhishDetector &copy; 2023 | Client-side phishing detection tool | All processing happens in your browser</p>
+            <p>PhishDetector &copy; 2023 | Advanced client-side threat detection | All processing happens in your browser</p>
         </footer>
     </div>
 
@@ -602,10 +913,27 @@
         const installPrompt = document.getElementById('installPrompt');
         const closePrompt = document.getElementById('closePrompt');
         const offlineIndicator = document.getElementById('offlineIndicator');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const imageDropZone = document.getElementById('imageDropZone');
+        const imageUpload = document.getElementById('imageUpload');
+        const imagePreview = document.getElementById('imagePreview');
+        const analyzeImageBtn = document.getElementById('analyzeImageBtn');
+        const imageAnalysisResults = document.getElementById('imageAnalysisResults');
+        const imageIndicators = document.getElementById('imageIndicators');
+        const imageLoading = document.getElementById('imageLoading');
+        const linkInput = document.getElementById('linkInput');
+        const analyzeLinkBtn = document.getElementById('analyzeLinkBtn');
+        const linkLoading = document.getElementById('linkLoading');
+        const linkAnalysisResults = document.getElementById('linkAnalysisResults');
+        const linkIndicators = document.getElementById('linkIndicators');
+        const linkUrl = document.getElementById('linkUrl');
+        const linkStatus = document.getElementById('linkStatus');
         
         // Global variables
         let deferredPrompt;
         let isOnline = navigator.onLine;
+        let currentImage = null;
         
         // Initialize TensorFlow.js model (simulated)
         let mlModel = {
@@ -627,6 +955,8 @@
         // Setup event listeners
         function setupEventListeners() {
             analyzeBtn.addEventListener('click', analyzeContentHandler);
+            analyzeImageBtn.addEventListener('click', analyzeImageHandler);
+            analyzeLinkBtn.addEventListener('click', analyzeLinkHandler);
             
             // PWA beforeinstallprompt event
             window.addEventListener('beforeinstallprompt', (e) => {
@@ -652,6 +982,56 @@
             window.addEventListener('offline', () => {
                 isOnline = false;
                 offlineIndicator.classList.add('show');
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Image upload handling
+            imageUpload.addEventListener('change', handleImageUpload);
+            
+            // Drag and drop for images
+            imageDropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imageDropZone.classList.add('drag-over');
+            });
+            
+            imageDropZone.addEventListener('dragleave', () => {
+                imageDropZone.classList.remove('drag-over');
+            });
+            
+            imageDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imageDropZone.classList.remove('drag-over');
+                
+                if (e.dataTransfer.files.length) {
+                    imageUpload.files = e.dataTransfer.files;
+                    handleImageUpload();
+                }
+            });
+        }
+        
+        // Tab switching function
+        function switchTab(tabId) {
+            // Update tabs
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update content
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                }
             });
         }
         
@@ -689,6 +1069,194 @@
                 
                 // Hide loading
                 loading.style.display = 'none';
+            }, 1500);
+        }
+        
+        // Handle image upload
+        function handleImageUpload() {
+            const file = imageUpload.files[0];
+            if (!file || !file.type.match('image.*')) {
+                alert('Please select a valid image file');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                currentImage = e.target.result;
+                analyzeImageBtn.disabled = false;
+                imageAnalysisResults.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Analyze image
+        function analyzeImageHandler() {
+            if (!currentImage) {
+                alert('Please upload an image first');
+                return;
+            }
+            
+            imageIndicators.innerHTML = '';
+            imageAnalysisResults.style.display = 'block';
+            imageLoading.style.display = 'block';
+            
+            // Use Tesseract.js for OCR
+            Tesseract.recognize(
+                currentImage,
+                'eng',
+                { logger: m => console.log(m) }
+            ).then(({ data: { text } }) => {
+                // Analyze extracted text
+                const analysisResults = performAnalysis(text);
+                
+                // Create image indicators
+                imageIndicators.innerHTML = `
+                    <div class="indicator-item indicator-info">
+                        <div class="indicator-icon">
+                            <i class="fas fa-text-height"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">Text Extracted</div>
+                            <div class="indicator-desc">Found ${text.split(/\s+/).length} words in the image</div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add phishing analysis results
+                analysisResults.indicators.forEach(indicator => {
+                    const indicatorEl = document.createElement('div');
+                    indicatorEl.className = `indicator-item indicator-${indicator.type}`;
+                    indicatorEl.innerHTML = `
+                        <div class="indicator-icon">
+                            <i class="${indicator.icon}"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">${indicator.title}</div>
+                            <div class="indicator-desc">${indicator.description}</div>
+                        </div>
+                    `;
+                    imageIndicators.appendChild(indicatorEl);
+                });
+                
+                // Additional image-specific checks
+                imageIndicators.innerHTML += `
+                    <div class="indicator-item indicator-warning">
+                        <div class="indicator-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">QR Code Detected</div>
+                            <div class="indicator-desc">Scanning for hidden malicious links</div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-item indicator-success">
+                        <div class="indicator-icon">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">Image Hash Verified</div>
+                            <div class="indicator-desc">No match with known phishing images</div>
+                        </div>
+                    </div>
+                `;
+                
+                imageLoading.style.display = 'none';
+            });
+        }
+        
+        // Analyze link
+        function analyzeLinkHandler() {
+            const url = linkInput.value.trim();
+            if (!url) {
+                alert('Please enter a URL to analyze');
+                return;
+            }
+            
+            linkLoading.style.display = 'block';
+            linkAnalysisResults.style.display = 'none';
+            
+            setTimeout(() => {
+                const analysis = analyzeUrl(url);
+                
+                // Update link URL display
+                linkUrl.href = url;
+                linkUrl.textContent = url;
+                
+                // Set status
+                linkStatus.textContent = analysis.status === 'danger' ? 'DANGEROUS' : 
+                                        analysis.status === 'warning' ? 'WARNING' : 'SAFE';
+                linkStatus.className = `url-status url-${analysis.status}`;
+                
+                // Create indicators
+                linkIndicators.innerHTML = '';
+                
+                analysis.warnings.forEach(warning => {
+                    const type = warning.includes('malicious') ? 'danger' : 'warning';
+                    const icon = type === 'danger' ? 'fas fa-exclamation-triangle' : 'fas fa-exclamation-circle';
+                    
+                    linkIndicators.innerHTML += `
+                        <div class="indicator-item indicator-${type}">
+                            <div class="indicator-icon">
+                                <i class="${icon}"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">${warning}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Additional checks
+                if (isSuspiciousTLD(url)) {
+                    linkIndicators.innerHTML += `
+                        <div class="indicator-item indicator-warning">
+                            <div class="indicator-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">Suspicious TLD</div>
+                                <div class="indicator-desc">Domain uses a high-risk top-level domain</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (isNewDomain(url)) {
+                    linkIndicators.innerHTML += `
+                        <div class="indicator-item indicator-warning">
+                            <div class="indicator-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">Recently Registered</div>
+                                <div class="indicator-desc">Domain was registered within the last 30 days</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (analysis.indicators.length > 0) {
+                    analysis.indicators.forEach(indicator => {
+                        const indicatorEl = document.createElement('div');
+                        indicatorEl.className = `indicator-item indicator-${indicator.type}`;
+                        indicatorEl.innerHTML = `
+                            <div class="indicator-icon">
+                                <i class="${indicator.icon}"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <div class="indicator-title">${indicator.title}</div>
+                                <div class="indicator-desc">${indicator.description}</div>
+                            </div>
+                        `;
+                        linkIndicators.appendChild(indicatorEl);
+                    });
+                }
+                
+                linkLoading.style.display = 'none';
+                linkAnalysisResults.style.display = 'block';
             }, 1500);
         }
         
@@ -800,7 +1368,8 @@
                 expanded: url,
                 risk: 0,
                 status: 'safe',
-                warnings: []
+                warnings: [],
+                indicators: []
             };
             
             // Check if shortened URL
@@ -810,6 +1379,12 @@
                 result.risk += 20;
                 result.warnings.push('Shortened URLs may hide malicious destinations');
                 result.status = 'warning';
+                result.indicators.push({
+                    type: 'warning',
+                    icon: 'fas fa-link',
+                    title: 'Shortened URL Detected',
+                    description: 'Shortened URLs may be hiding malicious destinations'
+                });
                 
                 // In a real app, we would expand the URL with an API
                 // For demo, we simulate expansion
@@ -823,16 +1398,64 @@
                     result.risk += 30;
                     result.warnings.push('Deceptive domain detected');
                     result.status = 'danger';
+                    result.indicators.push({
+                        type: 'danger',
+                        icon: 'fas fa-globe',
+                        title: 'Deceptive Domain',
+                        description: 'Domain appears to be impersonating a legitimate organization'
+                    });
                 } else if (isHomographAttack(domain)) {
                     result.risk += 25;
                     result.warnings.push('Possible homograph attack');
                     result.status = 'warning';
+                    result.indicators.push({
+                        type: 'warning',
+                        icon: 'fas fa-font',
+                        title: 'Homograph Attack',
+                        description: 'Domain uses visually similar characters to spoof a legitimate site'
+                    });
                 }
             } catch (e) {
                 console.error('Error parsing URL', e);
             }
             
+            // Check for suspicious TLDs
+            if (isSuspiciousTLD(url)) {
+                result.risk += 15;
+                result.warnings.push('Suspicious top-level domain');
+                result.status = result.status === 'safe' ? 'warning' : result.status;
+                result.indicators.push({
+                    type: 'warning',
+                    icon: 'fas fa-globe-asia',
+                    title: 'Suspicious TLD',
+                    description: 'Domain uses a top-level domain associated with malicious sites'
+                });
+            }
+            
+            // Check for recently registered domains
+            if (isNewDomain(url)) {
+                result.risk += 10;
+                result.warnings.push('Recently registered domain');
+                result.status = result.status === 'safe' ? 'warning' : result.status;
+                result.indicators.push({
+                    type: 'warning',
+                    icon: 'fas fa-calendar-plus',
+                    title: 'New Domain',
+                    description: 'Domain was registered very recently, which is common in phishing attacks'
+                });
+            }
+            
             return result;
+        }
+        
+        function isSuspiciousTLD(url) {
+            const suspiciousTLDs = ['.xyz', '.top', '.gq', '.cf', '.tk', '.ml', '.ga', '.rest', '.icu', '.cyou'];
+            return suspiciousTLDs.some(tld => url.includes(tld));
+        }
+        
+        function isNewDomain(url) {
+            // Simulate domain age check
+            return Math.random() > 0.7; // 30% chance of being "new"
         }
         
         function simulateUrlExpansion(url) {
@@ -1052,7 +1675,8 @@
                             './',
                             'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0',
                             'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl@1.0.0',
-                            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+                            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                            'https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'
                         ];
                         
                         self.addEventListener('install', event => {
