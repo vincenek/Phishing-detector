@@ -991,6 +991,7 @@
         let deferredPrompt;
         let isOnline = navigator.onLine;
         let currentImage = null;
+        let analysisCache = {};
         
         // Enhanced homograph character mappings
         const homographMap = {
@@ -1030,9 +1031,7 @@
                 if (text.includes('suspended')) score += 20;
                 if (text.includes('click here')) score += 30;
                 
-                // Add random factor for realism
-                score += Math.floor(Math.random() * 10);
-                
+                // Removed random factor for consistent results
                 return Math.min(95, score);
             }
         };
@@ -1140,6 +1139,12 @@
         }
         
         function analyzeContent(content) {
+            // Check cache first
+            if (analysisCache[content]) {
+                displayResults(analysisCache[content]);
+                return;
+            }
+            
             // Reset UI
             indicators.innerHTML = '';
             riskScore.textContent = '0%';
@@ -1155,6 +1160,9 @@
             setTimeout(() => {
                 // Perform analysis
                 const analysisResults = performAnalysis(content);
+                
+                // Cache results
+                analysisCache[content] = analysisResults;
                 
                 // Update UI with results
                 displayResults(analysisResults);
@@ -1187,6 +1195,13 @@
         function analyzeImageHandler() {
             if (!currentImage) {
                 alert('Please upload an image first');
+                return;
+            }
+            
+            // Check cache
+            if (analysisCache[currentImage]) {
+                imageIndicators.innerHTML = analysisCache[currentImage];
+                imageAnalysisResults.style.display = 'block';
                 return;
             }
             
@@ -1246,8 +1261,8 @@
                     `;
                 }
                 
-                // Simulate image hash matching
-                if (Math.random() > 0.7) {
+                // Simulate image hash matching - deterministic based on content
+                if (text.toLowerCase().includes('phish') || text.toLowerCase().includes('scam')) {
                     indicatorsHTML += `
                         <div class="indicator-item indicator-warning">
                             <div class="indicator-icon">
@@ -1274,6 +1289,7 @@
                 }
                 
                 imageIndicators.innerHTML = indicatorsHTML;
+                analysisCache[currentImage] = indicatorsHTML;
                 imageLoading.style.display = 'none';
             });
         }
@@ -1286,103 +1302,115 @@
                 return;
             }
             
+            // Check cache
+            if (analysisCache[url]) {
+                const analysis = analysisCache[url];
+                updateLinkUI(analysis);
+                return;
+            }
+            
             linkLoading.style.display = 'block';
             linkAnalysisResults.style.display = 'none';
             
             setTimeout(() => {
                 const analysis = analyzeUrl(url);
+                analysisCache[url] = analysis;
+                updateLinkUI(analysis);
+                linkLoading.style.display = 'none';
+            }, 1500);
+        }
+        
+        function updateLinkUI(analysis) {
+            // Update link URL display
+            linkUrl.href = analysis.original;
+            linkUrl.textContent = analysis.original;
+            
+            // Set status
+            linkStatus.textContent = analysis.status === 'danger' ? 'DANGEROUS' : 
+                                    analysis.status === 'warning' ? 'WARNING' : 'SAFE';
+            linkStatus.className = `url-status url-${analysis.status}`;
+            
+            // Create indicators
+            let indicatorsHTML = '';
+            
+            analysis.warnings.forEach(warning => {
+                const type = warning.includes('malicious') ? 'danger' : 'warning';
+                const icon = type === 'danger' ? 'fas fa-exclamation-triangle' : 'fas fa-exclamation-circle';
                 
-                // Update link URL display
-                linkUrl.href = url;
-                linkUrl.textContent = url;
-                
-                // Set status
-                linkStatus.textContent = analysis.status === 'danger' ? 'DANGEROUS' : 
-                                        analysis.status === 'warning' ? 'WARNING' : 'SAFE';
-                linkStatus.className = `url-status url-${analysis.status}`;
-                
-                // Create indicators
-                let indicatorsHTML = '';
-                
-                analysis.warnings.forEach(warning => {
-                    const type = warning.includes('malicious') ? 'danger' : 'warning';
-                    const icon = type === 'danger' ? 'fas fa-exclamation-triangle' : 'fas fa-exclamation-circle';
-                    
+                indicatorsHTML += `
+                    <div class="indicator-item indicator-${type}">
+                        <div class="indicator-icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">${warning}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Additional checks
+            if (isSuspiciousTLD(url)) {
+                indicatorsHTML += `
+                    <div class="indicator-item indicator-warning">
+                        <div class="indicator-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">Suspicious TLD</div>
+                            <div class="indicator-desc">Domain uses a high-risk top-level domain</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (isNewDomain(url)) {
+                indicatorsHTML += `
+                    <div class="indicator-item indicator-warning">
+                        <div class="indicator-icon">
+                            <i class="fas fa-calendar-plus"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">Recently Registered</div>
+                            <div class="indicator-desc">Domain was registered within the last 30 days</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (!url.startsWith('https://')) {
+                indicatorsHTML += `
+                    <div class="indicator-item indicator-warning">
+                        <div class="indicator-icon">
+                            <i class="fas fa-lock-open"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">No HTTPS Encryption</div>
+                            <div class="indicator-desc">Connection is not secure</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (analysis.indicators.length > 0) {
+                analysis.indicators.forEach(indicator => {
                     indicatorsHTML += `
-                        <div class="indicator-item indicator-${type}">
+                        <div class="indicator-item indicator-${indicator.type}">
                             <div class="indicator-icon">
-                                <i class="${icon}"></i>
+                                <i class="${indicator.icon}"></i>
                             </div>
                             <div class="indicator-content">
-                                <div class="indicator-title">${warning}</div>
+                                <div class="indicator-title">${indicator.title}</div>
+                                <div class="indicator-desc">${indicator.description}</div>
                             </div>
                         </div>
                     `;
                 });
-                
-                // Additional checks
-                if (isSuspiciousTLD(url)) {
-                    indicatorsHTML += `
-                        <div class="indicator-item indicator-warning">
-                            <div class="indicator-icon">
-                                <i class="fas fa-globe"></i>
-                            </div>
-                            <div class="indicator-content">
-                                <div class="indicator-title">Suspicious TLD</div>
-                                <div class="indicator-desc">Domain uses a high-risk top-level domain</div>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                if (isNewDomain(url)) {
-                    indicatorsHTML += `
-                        <div class="indicator-item indicator-warning">
-                            <div class="indicator-icon">
-                                <i class="fas fa-calendar-plus"></i>
-                            </div>
-                            <div class="indicator-content">
-                                <div class="indicator-title">Recently Registered</div>
-                                <div class="indicator-desc">Domain was registered within the last 30 days</div>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                if (!url.startsWith('https://')) {
-                    indicatorsHTML += `
-                        <div class="indicator-item indicator-warning">
-                            <div class="indicator-icon">
-                                <i class="fas fa-lock-open"></i>
-                            </div>
-                            <div class="indicator-content">
-                                <div class="indicator-title">No HTTPS Encryption</div>
-                                <div class="indicator-desc">Connection is not secure</div>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                if (analysis.indicators.length > 0) {
-                    analysis.indicators.forEach(indicator => {
-                        indicatorsHTML += `
-                            <div class="indicator-item indicator-${indicator.type}">
-                                <div class="indicator-icon">
-                                    <i class="${indicator.icon}"></i>
-                                </div>
-                                <div class="indicator-content">
-                                    <div class="indicator-title">${indicator.title}</div>
-                                    <div class="indicator-desc">${indicator.description}</div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                
-                linkIndicators.innerHTML = indicatorsHTML;
-                linkLoading.style.display = 'none';
-                linkAnalysisResults.style.display = 'block';
-            }, 1500);
+            }
+            
+            linkIndicators.innerHTML = indicatorsHTML;
+            linkLoading.style.display = 'none';
+            linkAnalysisResults.style.display = 'block';
         }
         
         function performAnalysis(content) {
@@ -1574,7 +1602,7 @@
                 });
             }
             
-            // Check for recently registered domains
+            // Check for recently registered domains - deterministic based on domain
             if (isNewDomain(url)) {
                 result.risk += 10;
                 result.warnings.push('Recently registered domain');
@@ -1596,8 +1624,16 @@
         }
         
         function isNewDomain(url) {
-            // Simulate domain age check
-            return Math.random() > 0.7; // 30% chance of being "new"
+            // Deterministic domain age check based on domain name
+            try {
+                const domain = new URL(url).hostname;
+                // Calculate a "virtual registration date" based on domain name
+                // This ensures the same domain always returns the same result
+                const charSum = domain.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+                return (charSum % 100) < 30; // 30% of domains are "new"
+            } catch (e) {
+                return false;
+            }
         }
         
         function simulateUrlExpansion(url) {
