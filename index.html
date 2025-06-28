@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#4361ee">
     <meta name="description" content="Advanced client-side phishing detection">
-    <title>PhishDetector - Comprehensive Threat Analysis</title>
+    <title>PhishDetector - Reliable Threat Analysis</title>
     
     <!-- PWA Manifest and Icons -->
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBoaXNoRGV0ZWN0b3IiLAogICJzaG9ydF9uYW1lIjogIlBoaXNoRGV0ZWN0IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjNDM2MWVlIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjVmN2ZhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXpOVEFnTlRBd0lqNDhjM1I1YkdVK8lEeHdZWFJvSUdacGJHdzlJblZ5YkNnalptbHNkR1Z5TVM0d0xqQXVNQ0F4TURBdU1UWWlQZzBLUDNOMlp6ND0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F6TlRBZ05UQXdJajQ4YzNSNWJHVSvJRHh3WVhSb0lHWnBiR3c5SW5WeWJDZ2pabWxzZEdWeU1TNHdMakF1TUNBeE1EQXVNVFlpUGcwS1AzTjJaejQ9IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
@@ -632,14 +632,28 @@
             font-size: 2rem;
             margin-bottom: 15px;
         }
+        
+        .reliability-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="reliability-badge">Consistent Results Guaranteed</div>
         <header>
-            <div class="logo">🔍</div>
-            <h1>PhishDetector</h1>
-            <p class="subtitle">Advanced client-side detection for phishing threats in text, links, and images</p>
+            <div class="logo">🛡️</div>
+            <h1>PhishDetector Pro</h1>
+            <p class="subtitle">Advanced client-side detection with consistent, reliable phishing analysis</p>
         </header>
         
         <div class="tab-container">
@@ -885,18 +899,18 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-brain"></i></div>
-                    <h3>AI-Powered Analysis</h3>
-                    <p>Deep learning models trained on millions of phishing samples</p>
+                    <h3>Deterministic Analysis</h3>
+                    <p>Same input always produces the same output</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-eye"></i></div>
-                    <h3>Image Forensics</h3>
-                    <p>Detect hidden text, QR codes, and manipulated images</p>
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <h3>Content Caching</h3>
+                    <p>Results cached for identical inputs</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-link"></i></div>
-                    <h3>Link Deobfuscation</h3>
-                    <p>Uncover hidden redirects and malicious destinations</p>
+                    <h3>Enhanced URL Analysis</h3>
+                    <p>Expanded database of malicious patterns</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-font"></i></div>
@@ -922,7 +936,7 @@
         </div>
         
         <footer>
-            <p>PhishDetector &copy; 2023 | Advanced client-side threat detection | All processing happens in your browser</p>
+            <p>PhishDetector Pro &copy; 2023 | Reliable client-side threat detection | All processing happens in your browser</p>
         </footer>
     </div>
 
@@ -1003,35 +1017,51 @@
             'σ': 's', 'τ': 't', 'υ': 'u', 'φ': 'ph', 'χ': 'ch', 'ψ': 'ps', 'ω': 'w'
         };
         
-        // Known malicious domains database (simulated)
+        // Expanded malicious domains database
         const maliciousDomains = [
-            'paypal-security-verification.com',
-            'amaz0n-login.com',
-            'apple-id-verify.net',
-            'microsoft-security-update.org',
-            'google-account-recovery.co',
-            'bankofamerica-securelogin.com',
-            'chase-online-banking.net',
-            'wellsfargo-secureaccess.com',
-            'netflix-payment-update.info',
-            'ebay-account-confirm.com'
+            'paypal-security-verification.com', 'amaz0n-login.com', 'apple-id-verify.net',
+            'microsoft-security-update.org', 'google-account-recovery.co', 
+            'bankofamerica-securelogin.com', 'chase-online-banking.net', 
+            'wellsfargo-secureaccess.com', 'netflix-payment-update.info', 
+            'ebay-account-confirm.com', 'facebook-login-security.com',
+            'twitter-verify-account.net', 'instagram-account-recovery.org',
+            'linkedin-security-update.co', 'dropbox-file-recovery.com',
+            'adobe-account-confirm.net', 'amazon-payment-update.org',
+            'apple-id-locked.com', 'microsoft-account-security.net',
+            'paypal-limited-account.org', 'ebay-suspended-account.co',
+            'whatsapp-verification-code.com', 'telegram-account-security.net',
+            'skype-account-recovery.org', 'spotify-payment-update.co'
         ];
         
         // Initialize TensorFlow.js model (simulated)
         let mlModel = {
             predict: (text) => {
-                // Enhanced ML simulation based on content analysis
+                // Deterministic ML simulation based on content analysis
                 let score = 0;
+                const textLower = text.toLowerCase();
                 
-                // Increase score for suspicious patterns
-                if (text.includes('http')) score += 20;
-                if (text.includes('password')) score += 15;
-                if (text.includes('verify')) score += 10;
-                if (text.includes('urgent')) score += 25;
-                if (text.includes('suspended')) score += 20;
-                if (text.includes('click here')) score += 30;
+                // Scoring based on suspicious patterns
+                const patterns = [
+                    {regex: /http/, score: 20},
+                    {regex: /password/, score: 15},
+                    {regex: /verify/, score: 10},
+                    {regex: /urgent/, score: 25},
+                    {regex: /suspended/, score: 20},
+                    {regex: /click here/, score: 30},
+                    {regex: /account locked/, score: 25},
+                    {regex: /security alert/, score: 20},
+                    {regex: /limited time/, score: 15},
+                    {regex: /dear customer/, score: 10},
+                    {regex: /unusual activity/, score: 25},
+                    {regex: /immediate action/, score: 30}
+                ];
                 
-                // Removed random factor for consistent results
+                patterns.forEach(pattern => {
+                    if (pattern.regex.test(textLower)) {
+                        score += pattern.score;
+                    }
+                });
+                
                 return Math.min(95, score);
             }
         };
@@ -1140,8 +1170,9 @@
         
         function analyzeContent(content) {
             // Check cache first
-            if (analysisCache[content]) {
-                displayResults(analysisCache[content]);
+            const cacheKey = `text-${content}`;
+            if (analysisCache[cacheKey]) {
+                displayResults(analysisCache[cacheKey]);
                 return;
             }
             
@@ -1162,7 +1193,7 @@
                 const analysisResults = performAnalysis(content);
                 
                 // Cache results
-                analysisCache[content] = analysisResults;
+                analysisCache[cacheKey] = analysisResults;
                 
                 // Update UI with results
                 displayResults(analysisResults);
@@ -1199,8 +1230,9 @@
             }
             
             // Check cache
-            if (analysisCache[currentImage]) {
-                imageIndicators.innerHTML = analysisCache[currentImage];
+            const cacheKey = `image-${currentImage}`;
+            if (analysisCache[cacheKey]) {
+                imageIndicators.innerHTML = analysisCache[cacheKey];
                 imageAnalysisResults.style.display = 'block';
                 return;
             }
@@ -1262,7 +1294,8 @@
                 }
                 
                 // Simulate image hash matching - deterministic based on content
-                if (text.toLowerCase().includes('phish') || text.toLowerCase().includes('scam')) {
+                if (text.toLowerCase().includes('phish') || text.toLowerCase().includes('scam') || 
+                    text.toLowerCase().includes('verify') || text.toLowerCase().includes('password')) {
                     indicatorsHTML += `
                         <div class="indicator-item indicator-warning">
                             <div class="indicator-icon">
@@ -1289,7 +1322,7 @@
                 }
                 
                 imageIndicators.innerHTML = indicatorsHTML;
-                analysisCache[currentImage] = indicatorsHTML;
+                analysisCache[cacheKey] = indicatorsHTML;
                 imageLoading.style.display = 'none';
             });
         }
@@ -1303,9 +1336,9 @@
             }
             
             // Check cache
-            if (analysisCache[url]) {
-                const analysis = analysisCache[url];
-                updateLinkUI(analysis);
+            const cacheKey = `url-${url}`;
+            if (analysisCache[cacheKey]) {
+                updateLinkUI(analysisCache[cacheKey]);
                 return;
             }
             
@@ -1314,7 +1347,7 @@
             
             setTimeout(() => {
                 const analysis = analyzeUrl(url);
-                analysisCache[url] = analysis;
+                analysisCache[cacheKey] = analysis;
                 updateLinkUI(analysis);
                 linkLoading.style.display = 'none';
             }, 1500);
@@ -1350,7 +1383,7 @@
             });
             
             // Additional checks
-            if (isSuspiciousTLD(url)) {
+            if (isSuspiciousTLD(analysis.original)) {
                 indicatorsHTML += `
                     <div class="indicator-item indicator-warning">
                         <div class="indicator-icon">
@@ -1364,7 +1397,7 @@
                 `;
             }
             
-            if (isNewDomain(url)) {
+            if (isNewDomain(analysis.original)) {
                 indicatorsHTML += `
                     <div class="indicator-item indicator-warning">
                         <div class="indicator-icon">
@@ -1378,7 +1411,7 @@
                 `;
             }
             
-            if (!url.startsWith('https://')) {
+            if (!analysis.original.startsWith('https://')) {
                 indicatorsHTML += `
                     <div class="indicator-item indicator-warning">
                         <div class="indicator-icon">
@@ -1628,7 +1661,6 @@
             try {
                 const domain = new URL(url).hostname;
                 // Calculate a "virtual registration date" based on domain name
-                // This ensures the same domain always returns the same result
                 const charSum = domain.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
                 return (charSum % 100) < 30; // 30% of domains are "new"
             } catch (e) {
@@ -1643,7 +1675,9 @@
                 'tinyurl.com/bank-update': 'https://fake-bank-login.com/steal-credentials',
                 't.co/amzn-deal': 'https://amaz0n-deals.com/fake-offer',
                 'goo.gl/securelogin': 'http://phishing-login-page.net',
-                'ow.ly/paypal-verify': 'https://paypal-scam-site.org/verify'
+                'ow.ly/paypal-verify': 'https://paypal-scam-site.org/verify',
+                'bit.ly/account-locked': 'https://steal-info.com/login',
+                'tinyurl.com/security-alert': 'http://fake-security-update.net'
             };
             
             for (const short in expansions) {
@@ -1658,7 +1692,9 @@
         function isDeceptiveDomain(domain) {
             const legitimateDomains = [
                 'paypal.com', 'apple.com', 'microsoft.com', 'amazon.com', 'google.com',
-                'ebay.com', 'bankofamerica.com', 'chase.com', 'wellsfargo.com', 'netflix.com'
+                'ebay.com', 'bankofamerica.com', 'chase.com', 'wellsfargo.com', 'netflix.com',
+                'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com', 'dropbox.com',
+                'adobe.com', 'whatsapp.com', 'telegram.org', 'skype.com', 'spotify.com'
             ];
             
             // Check for exact matches (safe)
