@@ -11,6 +11,9 @@
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBoaXNoRGV0ZWN0b3IiLAogICJzaG9ydF9uYW1lIjogIlBoaXNoRGV0ZWN0IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjNDM2MWVlIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjVmN2ZhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXpOVEFnTlRBd0lqNDhjM1I1YkdVK8lEeHdZWFJvSUdacGJHdzlJblZ5YkNnalptbHNkR1Z5TVM0d0xqQXVNQ0F4TURBdU1UWWlQZzBLUDNOMlp6ND0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F6TlRBZ05UQXdJajQ4YzNSNWJHVSvJRHh3WVhSb0lHWnBiR3c5SW5WeWJDZ2pabWxzZEdWeU1TNHdMakF1TUNBeE1EQXVNVFlpUGcwS1AzTjJaejQ9IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSIjNDM2MWVlIj48cGF0aCBkPSJNMjU2IDBDMTE0LjYgMCAwIDExNC42IDAgMjU2czExNC42IDI1NiAyNTYgMjU2IDI1Ni0xMTQuNiAyNTYtMjU2UzM5Ny40IDAgMjU2IDB6bTAgNDQ4Yy0xMDUuOSAwLTE5Mi04Ni4xLTE5Mi0xOTJTMjUwLjEgNjQgMjU2IDY0czE5MiA4Ni4xIDE5MiAxOTItODYuMSAxOTItMTkyIDE5MnpNMTkyIDIyNGMwLTEzLjMgMTAuNy0yNCAyNC0yNGgxNDRjMTMuMyAwIDI0IDEwLjcgMjQgMjRzLTEwLjcgMjQtMjQgMjRIMjE2Yy0xMy4zIDAtMjQtMTAuNy0yNC0yNHptMjQgNzJIMjE2Yy0xMy4zIDAtMjQgMTAuNy0yNCAyNHMxMC43IDI0IDI0IDI0aDgwYzEzLjMgMCAyNC0xMC43IDI0LTI0cy0xMC43LTI0LTI0LTI0eiIvPjwvc3ZnPg==">
     
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- TensorFlow.js for ML analysis -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
     <!-- Tesseract.js for OCR -->
@@ -49,6 +52,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
         }
         
         header {
@@ -675,7 +679,7 @@
                     <p>Paste the content of a suspicious email, message, or document below:</p>
                     <textarea id="emailContent" placeholder="Paste content here..."></textarea>
                     
-                    <p class="model-status">TensorFlow.js ML Model: <span id="modelStatus">Loaded and ready</span></p>
+                    <p class="model-status">TensorFlow.js ML Model: <span id="modelStatus" class="model-active">Loaded and ready</span></p>
                     
                     <button id="analyzeBtn" class="btn">
                         <i class="fas fa-search"></i> Analyze for Phishing Indicators
@@ -749,7 +753,7 @@
                         <i class="fas fa-search"></i> Analyze Image
                     </button>
                     
-                    <div class="loading" id="imageLoading" style="display: none;">
+                    <div class="loading" id="imageLoading">
                         <div class="spinner"></div>
                         <p>Analyzing image content. This may take 10-15 seconds...</p>
                     </div>
@@ -824,12 +828,12 @@
                         <i class="fas fa-shield-alt"></i> Analyze URL Safety
                     </button>
                     
-                    <div class="loading" id="linkLoading" style="display: none;">
+                    <div class="loading" id="linkLoading">
                         <div class="spinner"></div>
                         <p>Analyzing link safety. This may take a few seconds...</p>
                     </div>
                     
-                    <div id="linkAnalysisResults" class="link-analysis-results" style="display: none;">
+                    <div id="linkAnalysisResults" class="link-analysis-results">
                         <h3 style="margin-top: 30px;">Link Analysis Results</h3>
                         <div class="indicators" id="linkIndicators"></div>
                         
@@ -1071,6 +1075,16 @@
             setupEventListeners();
             checkPWAInstallable();
             showPWAInstallPrompt();
+            hideLoadingElements();
+        }
+        
+        // Hide loading elements initially
+        function hideLoadingElements() {
+            loading.style.display = 'none';
+            imageLoading.style.display = 'none';
+            linkLoading.style.display = 'none';
+            linkAnalysisResults.style.display = 'none';
+            imageAnalysisResults.style.display = 'none';
         }
         
         // Setup event listeners
@@ -1240,6 +1254,7 @@
             imageIndicators.innerHTML = '';
             imageAnalysisResults.style.display = 'block';
             imageLoading.style.display = 'block';
+            analyzeImageBtn.disabled = true;
             
             // Use Tesseract.js for OCR
             Tesseract.recognize(
@@ -1324,6 +1339,22 @@
                 imageIndicators.innerHTML = indicatorsHTML;
                 analysisCache[cacheKey] = indicatorsHTML;
                 imageLoading.style.display = 'none';
+                analyzeImageBtn.disabled = false;
+            }).catch(error => {
+                console.error('OCR Error:', error);
+                imageIndicators.innerHTML = `
+                    <div class="indicator-item indicator-danger">
+                        <div class="indicator-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="indicator-content">
+                            <div class="indicator-title">OCR Processing Failed</div>
+                            <div class="indicator-desc">Could not extract text from image: ${error.message}</div>
+                        </div>
+                    </div>
+                `;
+                imageLoading.style.display = 'none';
+                analyzeImageBtn.disabled = false;
             });
         }
         
