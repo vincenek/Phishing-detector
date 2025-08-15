@@ -1,0 +1,22 @@
+{
+  "name": "phishdetect",
+  "short_name": "phishdetect",
+  "description": "Advanced client-side phishing detection with behavioral analysis",
+  "start_url": "https://vincenek.github.io/Phishing-detector/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/q71HH5gT/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/263Rk7BB/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
